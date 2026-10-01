@@ -1,0 +1,8 @@
+spoofs group: 10, 23, 28, 32
+
+Part 2 of sp-partial-28-09/90, cut from the ZED-F9P cold start
+(INF-NOTICE 'Stopping GNSS'). Written by split_ubx_at_cold_start.py.
+  COM3___9600_260928_103310.ubx: bytes 1354795-2891137 of 2891137 (sha256 02ba6da2ca54e81506978aa01b171c117160515829bd7632fa89e10ba43f8650)
+    original sha256 a597647fdcceb076474ba68f780a315ecf65d38026242b6a8e9ba3c8675f9e97
+  COM4___9600_260928_103302.ubx: bytes 1114903-2340292 of 2340292 (sha256 4f17257a529209ff824ff49b105ecb98a2e2549e1aafd025b7b7deb97e435a0f)
+    original sha256 4d395ff9ba1aef87ef59a98f250074bad98228ab79cafc944b447a373513931b
