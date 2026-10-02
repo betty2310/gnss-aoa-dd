@@ -1,0 +1,7 @@
+GPS TOW window [201251, 203251) s; RXM-RAWX, NAV-PVT and NAV-SAT frames copied byte for byte by extract_ubx_window.py.
+  raw_data_1.ubx: 6529692 bytes (sha256 ba385d57870c391f3ec027f9d63d183aac34bc299e17f6d5eea616b7a276a97c)
+    messages {'NAV-PVT': 2000, 'NAV-SAT': 1986, 'RXM-RAWX': 2000}
+    source 152367104 bytes (sha256 1f3e6cba64184ca2f8b409ca4aa43fddec707709c905736675c2dedbbb30797b)
+  raw_data_2.ubx: 6525692 bytes (sha256 b5e58e8fe94648e4441c9cfb4c2a357c49543baea9c0d1e63b35c80e00493b40)
+    messages {'NAV-PVT': 2000, 'NAV-SAT': 2000, 'RXM-RAWX': 2000}
+    source 152059904 bytes (sha256 cd6a8120423b9ff0a33552ac8cdb365baac07ae399f8bcee3e8c7894e8481f85)

@@ -28,6 +28,9 @@ shielded enclosure.
 | `aoa_experiment.py` | Experiment configuration, per-window runs, and the saved `experiment.json` manifest |
 | `aoa_figure_report.py`, `aoa_figure_style.json` | Figure and table export, and the figure style |
 | `split_ubx_at_cold_start.py` | Splits a UBX log at a receiver cold start (this produced the `*-1` / `*-2` folders) |
+| `authentic_figures.py` | Fractional-DD and AoA figures for the authentic dataset |
+| `extract_ubx_window.py` | Cuts a GPS-time window of RXM-RAWX / NAV-PVT / NAV-SAT out of a long log (this produced `dataset/authentic/`) |
+| `dataset/authentic/` | 2000 s authentic-sky capture (see below) |
 | `dataset/sp-partial-28-09/` | The partial-spoof capture of 2026-09-28 (see below) |
 | `tests/` | Unit tests |
 | `CONTEXT.md`, `gnss_aoa_paper_methodology_context.md` | Terminology and the method derivation |
@@ -127,6 +130,49 @@ separately. Nothing is carried across the reacquisition.
 | --- | --- | --- | --- | --- | --- |
 | 1 | 124414–124549 | 9 | 94.8° | prior | 23.7° |
 | 2 | 124597–124724 | 9 | 93.6° | prior | 18.8° |
+
+## Dataset: `dataset/authentic`
+
+An authentic-sky capture with no spoofing signal, used for the authentic-scenario figures. Two
+u-blox receivers (`raw_data_1.ubx` = RX1, `raw_data_2.ubx` = RX2), one L1 wavelength apart,
+logged a static session of about 3.4 h. The folder keeps 2000 s of it, GPS TOW 201251–203250,
+and only the messages the analysis reads (RXM-RAWX, NAV-PVT, NAV-SAT), copied byte for byte by
+`extract_ubx_window.py`. `note.txt` lists the SHA-256 of the extracted files and of the
+original logs.
+
+```bash
+uv run python authentic_figures.py                  # paper style (aoa_figure_style.json)
+uv run python authentic_figures.py --style archive  # style of the original manuscript plots
+```
+
+It writes to `outputs/figures/authentic/<style>/`:
+
+- `dd_authentic_side_by_side`: fractional DD for every tracked PRN, the full 2000 s next to
+  the first 200 s.
+- `aoa_authentic_side_by_side`: Ephemeris-based AoA next to DD-method AoA, first 1000 s.
+- `fractional_dd_rx2_minus_rx1.csv` and `aoa_deg.csv`: the plotted values.
+
+Settings (constants at the top of `authentic_figures.py`):
+
+- Reference satellite PRN 10, the lowest PRN tracked by both receivers in the first epoch.
+  PRN 12 is tracked only intermittently and is left out of the DD figure.
+- Baseline azimuth 16° from north. The Ephemeris-based AoA is
+  `acos(cos(elev) · cos(azim − 16°))` from RX1's NAV-SAT.
+- DD-method AoA: `cos(alpha_i) = psi_i + cos(alpha_r) + m`, with `psi_i` the fractional DD
+  of RX1 − RX2, the reference-angle anchor `alpha_r = 53.89629°` and a fixed integer branch:
+  `m = 0` for PRNs 15, 23, 24, 32 and `m = −1` for PRNs 18, 25, 28. These branches were chosen
+  by hand for this capture; they are not the automatic branch selection of `aoa_pipeline.py`.
+- The DD figure shows the opposite orientation, RX2 − RX1, re-wrapped to ±0.5 cycle, as in the
+  manuscript.
+- Epochs are paired by GPS second. The 14 missing NAV-SAT epochs of RX1 (4 of them in the
+  first 1000 s) are gaps in the Ephemeris-based AoA.
+
+Expected console output:
+
+```
+reference PRN 10; 2000 epochs (TOW 201251-203250); PRNs [15, 18, 23, 24, 25, 28, 31, 32]; NAV-SAT gaps in AoA window 4
+mean |DD-method - ephemeris| AoA (deg): PRN 15 3.3, PRN 18 5.2, PRN 23 3.4, PRN 24 3.9, PRN 25 5.9, PRN 28 5.6, PRN 32 3.4
+```
 
 ## Tests
 
